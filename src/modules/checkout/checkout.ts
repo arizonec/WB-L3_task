@@ -17,7 +17,7 @@ class Checkout extends Component {
     }
 
     this.products.forEach((product) => {
-      const productComp = new Product(product, { isHorizontal: true });
+      const productComp = new Product(product, { isHorizontal: true }, false);
       productComp.render();
       productComp.attach(this.view.cart);
     });

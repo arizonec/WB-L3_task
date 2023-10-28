@@ -3,6 +3,7 @@ import { View } from '../../utils/view';
 import { formatPrice } from '../../utils/helpers'
 import html from './product.tpl.html';
 import { ProductData } from 'types';
+import { favoritesService } from '../../services/favorites.service';
 
 type ProductComponentParams = { [key: string]: any };
 
@@ -10,11 +11,13 @@ export class Product {
   view: View;
   product: ProductData;
   params: ProductComponentParams;
+  removeButton: boolean;
 
-  constructor(product: ProductData, params: ProductComponentParams = {}) {
+  constructor(product: ProductData, params: ProductComponentParams = {}, removeButton: boolean) {
     this.product = product;
     this.params = params;
     this.view = new ViewTemplate(html).cloneView();
+    this.removeButton = removeButton;
   }
 
   attach($root: HTMLElement) {
@@ -28,7 +31,17 @@ export class Product {
     this.view.img.setAttribute('src', src);
     this.view.title.innerText = name;
     this.view.price.innerText = formatPrice(salePriceU);
-
-    if (this.params.isHorizontal) this.view.root.classList.add('is__horizontal')
+    this.removeButton && this.view.removeButton.classList.add('removeButton')
+    
+    this.view.removeButton.onclick = (event: Event) => {
+        event.stopImmediatePropagation();
+        favoritesService.removeProductFromFav(this.product);
+    };
+    
+    if (this.params.isHorizontal) {
+        this.view.root.classList.add('is__horizontal')
+    } else {
+        this.view.root.classList.add('is__vertical')
+    }
   }
 }

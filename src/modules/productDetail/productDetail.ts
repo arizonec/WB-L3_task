@@ -4,6 +4,7 @@ import { formatPrice } from '../../utils/helpers';
 import { ProductData } from 'types';
 import html from './productDetail.tpl.html';
 import { cartService } from '../../services/cart.service';
+import { favoritesService } from '../../services/favorites.service';
 
 class ProductDetail extends Component {
   more: ProductList;
@@ -17,6 +18,7 @@ class ProductDetail extends Component {
   }
 
   async render() {
+    this.view.btnFavSvg.setAttribute('fill', '#808080');
     const urlParams = new URLSearchParams(window.location.search);
     const productId = Number(urlParams.get('id'));
 
@@ -32,10 +34,13 @@ class ProductDetail extends Component {
     this.view.description.innerText = description;
     this.view.price.innerText = formatPrice(salePriceU);
     this.view.btnBuy.onclick = this._addToCart.bind(this);
+    this.view.btnFav.onclick = this._addToFavorites.bind(this);
 
     const isInCart = await cartService.isInCart(this.product);
+    const isInFav = await favoritesService.isInFavorites(this.product);
 
     if (isInCart) this._setInCart();
+    if (isInFav) this._setInFav();
 
     fetch(`/api/getProductSecretKey?id=${id}`)
       .then((res) => res.json())
@@ -57,9 +62,23 @@ class ProductDetail extends Component {
     this._setInCart();
   }
 
+  private async _addToFavorites() {
+    if (!this.product) return;
+  
+  const isInFavorites = await favoritesService.isInFavorites(this.product);
+  if (isInFavorites) return; 
+  
+  favoritesService.addProductToFav(this.product);
+  this._setInFav();
+  }
+
   private _setInCart() {
     this.view.btnBuy.innerText = '✓ В корзине';
     this.view.btnBuy.disabled = true;
+  }
+
+  private _setInFav() {
+    this.view.btnFavSvg.setAttribute('fill', 'var(--key-color)');
   }
 }
 
