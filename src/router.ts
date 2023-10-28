@@ -3,6 +3,7 @@ import { notFoundComp } from './modules/notFound/notFound';
 import { homepageComp } from './modules/homepage/homepage';
 import { productDetailComp } from './modules/productDetail/productDetail';
 import { checkoutComp } from './modules/checkout/checkout';
+import { eventSender } from './services/sendAnalytics.service';
 
 const ROUTES = {
   '/': homepageComp,
@@ -30,5 +31,15 @@ export default class Router {
 
     component.attach(this.$appRoot);
     component.render();
+
+    eventSender.eventSend({
+        type: 'route',
+        payload: {
+            url: window.location.pathname
+        },
+        timestamp: Date.now()
+    })
   }
+
+
 }

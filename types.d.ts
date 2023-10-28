@@ -57,3 +57,24 @@ export type ProductData = {
     src: string;
     description: string;
 }
+
+export type AddToCardEvent = {
+    payload: {
+        productData: ProductData,
+    }
+}
+
+export type PurchaseEvent = {
+    payload: {
+        orderId: string,
+        totalPrice: number,
+        productIds: number[],
+    }
+}
+
+export type Analytics =  {
+    type: string;
+    payload: { url: string } | { productData: ProductData, secretKey: string } | { productData: ProductData } | { orderId: number, totalPrice: number, productIds: number[]};
+    timestamp: number;
+}
+

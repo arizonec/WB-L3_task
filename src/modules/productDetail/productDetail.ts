@@ -4,14 +4,17 @@ import { formatPrice } from '../../utils/helpers';
 import { ProductData } from 'types';
 import html from './productDetail.tpl.html';
 import { cartService } from '../../services/cart.service';
+import { eventSender } from '../../../src/services/sendAnalytics.service';
 
 class ProductDetail extends Component {
   more: ProductList;
   product?: ProductData;
+  secretKey: string
 
   constructor(props: any) {
     super(props);
 
+    this.secretKey = '';
     this.more = new ProductList();
     this.more.attach(this.view.more);
   }
@@ -37,17 +40,31 @@ class ProductDetail extends Component {
 
     if (isInCart) this._setInCart();
 
-    fetch(`/api/getProductSecretKey?id=${id}`)
+    await fetch(`/api/getProductSecretKey?id=${id}`)
       .then((res) => res.json())
       .then((secretKey) => {
+        this.secretKey = secretKey;
         this.view.secretKey.setAttribute('content', secretKey);
       });
+
 
     fetch('/api/getPopularProducts')
       .then((res) => res.json())
       .then((products) => {
         this.more.update(products);
       });
+
+    const isLogEmpty = Object.keys(this.product.log).length === 0;
+
+    eventSender.eventSend({
+      type: isLogEmpty ? 'viewCard' : 'viewCardPromo',
+      payload: {
+        productData: this.product, 
+        secretKey: this.secretKey
+    },
+      timestamp: Date.now()
+    });
+    
   }
 
   private _addToCart() {
@@ -55,12 +72,21 @@ class ProductDetail extends Component {
 
     cartService.addProduct(this.product);
     this._setInCart();
+
+    eventSender.eventSend({
+        type: 'addToCard', 
+        payload: {
+            productData: this.product
+        }, 
+        timestamp: Date.now()
+    });
   }
 
   private _setInCart() {
     this.view.btnBuy.innerText = '✓ В корзине';
     this.view.btnBuy.disabled = true;
   }
+
 }
 
 export const productDetailComp = new ProductDetail(html);
