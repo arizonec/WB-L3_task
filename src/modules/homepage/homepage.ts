@@ -1,8 +1,9 @@
 import { addElement } from '../../utils/helpers';
 import { Component } from '../component';
 import html from './homepage.tpl.html';
-
+import { userService } from '../../../src/services/user.service';
 import { ProductList } from '../productList/productList';
+import localforage from 'localforage';
 
 class Homepage extends Component {
   popularProducts: ProductList;
@@ -13,9 +14,16 @@ class Homepage extends Component {
     this.popularProducts = new ProductList();
     this.popularProducts.attach(this.view.popular);
   }
+  
 
-  render() {
-    fetch('/api/getPopularProducts')
+  async render() {
+    const userId = localforage.getItem('__wb-userId') || await userService.getId();
+
+    await fetch('/api/getPopularProducts', {
+        headers: {
+            'x-userid': userId.toString()
+        }
+    })
       .then((res) => res.json())
       .then((products) => {
         this.popularProducts.update(products);
