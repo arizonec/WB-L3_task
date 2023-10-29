@@ -4,6 +4,8 @@ import { formatPrice } from '../../utils/helpers';
 import { ProductData } from 'types';
 import html from './productDetail.tpl.html';
 import { cartService } from '../../services/cart.service';
+import { userService } from '../../../src/services/user.service';
+import localforage from 'localforage';
 
 class ProductDetail extends Component {
   more: ProductList;
@@ -37,13 +39,23 @@ class ProductDetail extends Component {
 
     if (isInCart) this._setInCart();
 
-    fetch(`/api/getProductSecretKey?id=${id}`)
+    const userId = localforage.getItem('__wb-userId') || await userService.getId();
+
+    await fetch(`/api/getProductSecretKey?id=${id}`, {
+        headers: {
+            'x-userid': userId.toString()
+        }
+    })
       .then((res) => res.json())
       .then((secretKey) => {
         this.view.secretKey.setAttribute('content', secretKey);
       });
 
-    fetch('/api/getPopularProducts')
+    await fetch('/api/getPopularProducts', {
+        headers: {
+            'x-userid': userId.toString()
+        }
+    })
       .then((res) => res.json())
       .then((products) => {
         this.more.update(products);
