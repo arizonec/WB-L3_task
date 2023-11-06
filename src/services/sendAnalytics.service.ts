@@ -16,7 +16,7 @@ class EventSender {
             fetch(this.url, {
                 method: 'POST',
                 body: JSON.stringify(body)
-            }).then(response => response.json());
+            });
 
         } catch(error: any) {
             console.log('ERROR', error.name)
