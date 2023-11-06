@@ -13,7 +13,7 @@ export class Product {
   params: ProductComponentParams;
   removeButton: boolean;
 
-  constructor(product: ProductData, params: ProductComponentParams = {}, removeButton: boolean) {
+  constructor(product: ProductData, params: ProductComponentParams = {}, removeButton: boolean = false) {
     this.product = product;
     this.params = params;
     this.view = new ViewTemplate(html).cloneView();
@@ -34,8 +34,9 @@ export class Product {
     this.removeButton && this.view.removeButton.classList.add('removeButton')
     
     this.view.removeButton.onclick = (event: Event) => {
-        event.stopImmediatePropagation();
+        event.preventDefault();
         favoritesService.removeProductFromFav(this.product);
+        this.view.root.remove();
     };
     
     if (this.params.isHorizontal) {
