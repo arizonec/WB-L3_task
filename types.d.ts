@@ -57,3 +57,9 @@ export type ProductData = {
     src: string;
     description: string;
 }
+
+export type Hint = {
+    name: string,
+    link: string
+}
+export type HintsList = Hint[]
