@@ -18,7 +18,6 @@ class ProductDetail extends Component {
   }
 
   async render() {
-    this.view.btnFavSvg.setAttribute('fill', '#808080');
     const urlParams = new URLSearchParams(window.location.search);
     const productId = Number(urlParams.get('id'));
 
@@ -33,14 +32,14 @@ class ProductDetail extends Component {
     this.view.title.innerText = name;
     this.view.description.innerText = description;
     this.view.price.innerText = formatPrice(salePriceU);
-    this.view.btnBuy.onclick = this._addToCart.bind(this);
-    this.view.btnFav.onclick = this._addToFavorites.bind(this);
+    this.view.btnBuy.onclick = this.addToCart.bind(this);
+    this.view.btnToFavorites.onclick = this.addToFavorites.bind(this);
 
     const isInCart = await cartService.isInCart(this.product);
     const isInFav = await favoritesService.isInFavorites(this.product);
 
     if (isInCart) this._setInCart();
-    if (isInFav) this._setInFav();
+    if (isInFav) this.view.btnToFavorites.classList.add('inFavorites');
 
     fetch(`/api/getProductSecretKey?id=${id}`)
       .then((res) => res.json())
@@ -55,30 +54,26 @@ class ProductDetail extends Component {
       });
   }
 
-  private _addToCart() {
+  private addToCart() {
     if (!this.product) return;
 
     cartService.addProduct(this.product);
     this._setInCart();
   }
 
-  private async _addToFavorites() {
+  async addToFavorites() {
     if (!this.product) return;
-  
-  const isInFavorites = await favoritesService.isInFavorites(this.product);
-  if (isInFavorites) return; 
-  
-  favoritesService.addProductToFav(this.product);
-  this._setInFav();
+
+    const isInFavorites = await favoritesService.isInFavorites(this.product);
+    if (isInFavorites) return;
+
+    favoritesService.addProductToFav(this.product);
+    this.view.btnToFavorites.classList.add('inFavorites');
   }
 
   private _setInCart() {
     this.view.btnBuy.innerText = '✓ В корзине';
     this.view.btnBuy.disabled = true;
-  }
-
-  private _setInFav() {
-    this.view.btnFavSvg.setAttribute('fill', 'var(--key-color)');
   }
 }
 

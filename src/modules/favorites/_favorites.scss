@@ -1,10 +1,10 @@
 .favorites {
     &__in {
       display: flex;
-      gap: 40px;
-      flex-wrap: wrap;
       justify-content: space-between;
       align-items: flex-start;
+      gap: 40px;
+      flex-wrap: wrap;
     }
   
     &__list {
@@ -14,13 +14,13 @@
     }
   
     &__controls {
-      max-width: 320px;
-      background: var(--plate-color);
-      padding: 20px 20px 30px;
-      box-sizing: border-box;
-      border-radius: var(--border-radius);
       position: sticky;
       top: 18px;
+      max-width: 320px;
+      padding: 20px 20px 30px;
+      box-sizing: border-box;
+      background: var(--plate-color);
+      border-radius: var(--border-radius);
   
       .btn {
         margin-bottom: 1em;
@@ -41,7 +41,7 @@
         display: block;
       }
   
-      .favorites__in {
+      .favorites__list-wrapper {
         display: none;
       }
     }

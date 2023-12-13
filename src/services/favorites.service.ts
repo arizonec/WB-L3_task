@@ -1,4 +1,5 @@
 import localforage from 'localforage';
+import { favoritesComp } from '../../src/modules/favorites/favorites';
 import { ProductData } from 'types';
 
 const FDB = '__favorites';
@@ -16,11 +17,11 @@ class FavoritesService {
   async removeProductFromFav(product: ProductData) {
     const products = await this.getFavorites();
     await this.setFavorites(products.filter(({ id }) => id !== product.id));
+    
   }
 
   async clear() {
     await localforage.removeItem(FDB)
-    this._updCountersFav();
   }
 
   async getFavorites(): Promise<ProductData[]> {
@@ -38,6 +39,7 @@ class FavoritesService {
   }
 
   private async _updCountersFav() {
+    favoritesComp.update();
     const products = await this.getFavorites();
     const count = products.length >= 10 ? '9+' : products.length;
 

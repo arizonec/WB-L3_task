@@ -10,7 +10,7 @@ const ROUTES = {
   '/catalog': catalogComp,
   '/product': productDetailComp,
   '/checkout': checkoutComp,
-  '/favorites': favoritesComp,
+  '/favorites': favoritesComp
 };
 
 export default class Router {
