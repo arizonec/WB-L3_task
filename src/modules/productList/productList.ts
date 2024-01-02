@@ -27,7 +27,7 @@ export class ProductList {
     this.view.root.innerHTML = '';
 
     this.products.forEach((product) => {
-      const productComp = new Product(product);
+      const productComp = new Product(product, undefined);
       productComp.render();
       productComp.attach(this.view.root);
     });

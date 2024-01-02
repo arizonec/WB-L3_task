@@ -1,5 +1,6 @@
 .product {
   text-decoration: none;
+  position: relative;
 
   &__img {
     position: relative;
@@ -46,4 +47,60 @@
       margin-right: 10px;
     }
   }
+
+  &.is__verttical {
+    display: flex;
+
+    .product__info {
+      margin-top: 10px;
+    }
+
+    .product__img {
+      width: 100%;
+      max-width: 180px;
+      margin-bottom: 0;
+      margin-right: 10px;
+    }
+  }
+}
+
+.removeButton {
+    display: none;
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    right: -6px;
+    top: -5px;
+    background-color: darkmagenta;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 14px;
+        right: 5px;
+        width: 20px;
+        height: 2px;
+        border-radius: 10px;
+        transform: rotate(-45deg);
+        background-color: white;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 14px;
+        right: 5px;
+        width: 20px;
+        height: 2px;
+        border-radius: 10px;
+        transform: rotate(45deg);
+        background-color: white;
+    }
+
+    &.is-shown {
+        display: block;
+    }
 }
